@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import type { ComponentProps, HTMLAttributes } from 'react';
+import type { ComponentProps, HTMLAttributes, ReactElement } from 'react';
 import { isValidElement, memo } from 'react';
 import ReactMarkdown, { type Options } from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
@@ -320,16 +320,15 @@ const components: Options['components'] = {
     }
 
     // Extract code content from children safely
-    let code = '';
-    if (
-      isValidElement(children) &&
-      children.props &&
-      typeof children.props.children === 'string'
-    ) {
-      code = children.props.children;
-    } else if (typeof children === 'string') {
-      code = children;
-    }
+  let code = '';
+if (isValidElement(children)) {
+  const element = children as ReactElement<{ children?: string }>;
+  if (typeof element.props.children === 'string') {
+    code = element.props.children;
+  }
+} else if (typeof children === 'string') {
+  code = children;
+}
 
     return (
       <CodeBlock
